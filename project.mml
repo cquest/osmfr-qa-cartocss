@@ -1,0 +1,110 @@
+{
+  "bounds": [
+    -180,
+    -85.0511,
+    180,
+    85.0511
+  ],
+  "center": [
+    2.5,
+    48.8,
+    14
+  ],
+  "format": "png8",
+  "interactivity": false,
+  "minzoom": 6,
+  "maxzoom": 16,
+  "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+  "Stylesheet": [
+    "style.mss"
+  ],
+  "Layer": [
+    {
+      "extent": [
+        -5.129722368257021,
+        41.36776952163563,
+        9.560160347841311,
+        51.08373477873707
+      ],
+      "Datasource": {
+        "type": "postgis",
+        "table": "(select  wkb_geometry, count(b.*) as buildings, nbcar  from insee_menages i left join planet_osm_polygon b on (st_intersects(st_expand(i.wkb_geometry,100), b.way) and b.building is not null) where i.wkb_geometry && !bbox! and nbcar<4 group by i.wkb_geometry,nbcar) as carreaux",
+        "key_field": "",
+        "geometry_field": "",
+        "extent_cache": "auto",
+        "extent": "-571038.081945237,5066739.86460471,1064232.18182374,6636118.82261642",
+        "dbname": "osm",
+        "host": "localhost",
+        "user": "fr",
+        "password": "m4d31nfr4nc3",
+        "id": "bati",
+        "project": "insee",
+        "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over"
+      },
+      "id": "bati",
+      "class": "",
+      "srs-name": "900913",
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "advanced": {},
+      "name": "bati"
+    },
+    {
+      "extent": [
+        -5.129722368257021,
+        41.36776952163563,
+        9.560160347841311,
+        51.08373477873707
+      ],
+      "Datasource": {
+        "type": "postgis",
+        "table": "(select  wkb_geometry, nbcar, count(l.*) as routes  from insee_menages i left join planet_osm_line l on (st_intersects(st_expand(i.wkb_geometry,100), l.way) and l.highway is not null) where i.wkb_geometry && !bbox! group by i.wkb_geometry, nbcar) as carreaux",
+        "key_field": "",
+        "geometry_field": "",
+        "extent_cache": "auto",
+        "extent": "-571038.081945237,5066739.86460471,1064232.18182374,6636118.82261642",
+        "dbname": "osm",
+        "host": "localhost",
+        "user": "fr",
+        "password": "m4d31nfr4nc3"
+      },
+      "id": "routes",
+      "class": "",
+      "srs-name": "900913",
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "advanced": {},
+      "name": "routes"
+    },
+    {
+      "extent": [
+        -5.096542304283048,
+        41.388255319471796,
+        9.52830069973821,
+        51.07101611387047
+      ],
+      "Datasource": {
+        "type": "postgis",
+        "table": "(SELECT count(*) as nb, c.insee_comm, c.wkb_geometry, d.format FROM r500_communes_noeuds c LEFT JOIN planet_osm_polygon b ON (ST_DWithin(c.wkb_geometry, b.way, 200) AND b.building is not null) LEFT JOIN cadastre d ON (d.insee = c.insee_comm) GROUP BY c.insee_comm, c.wkb_geometry, d.format) as bati_lz",
+        "key_field": "",
+        "geometry_field": "",
+        "extent_cache": "auto",
+        "extent": "-567344.494119166,5069779.01119724,1060685.58202005,6633865.27780838",
+        "dbname": "osm",
+        "host": "localhost",
+        "user": "fr",
+        "password": "m4d31nfr4nc3"
+      },
+      "id": "bati_lz",
+      "class": "",
+      "srs-name": "900913",
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "advanced": {},
+      "name": "bati_lz"
+    }
+  ],
+  "scale": 1,
+  "metatile": 2,
+  "_basemap": "examples.map-vyofok3q",
+  "name": "",
+  "description": "",
+  "attribution": ""
+}
