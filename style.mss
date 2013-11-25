@@ -9,6 +9,8 @@ Map {
 #bati [zoom>=12] {
   opacity: 0.7;
   polygon-fill: #aaa;
+  [ind_c<10] { polygon-opacity: 0.5; }
+  
   [buildings=0] {
     // polygon-pattern-file: url('hachure-0cf.png');
     polygon-fill: #0cf;
@@ -24,6 +26,21 @@ Map {
   }
 */
   }
+  [zoom>=16] {
+    line-width: 0.2; 
+	[ind_c>=10] { a/text-face-name: "DejaVu Sans Mono Bold"; }
+    a/text-face-name: "DejaVu Sans ExtraLight";
+    a/text-name: [ind_c]+" hab.";
+    a/text-allow-overlap: true;
+    a/text-orientation: 6;
+/*
+    a/text-dy: -3;
+	b/text-face-name: "DejaVu Sans Mono Oblique";
+    b/text-name: [buildings]+" bât.";
+    b/text-allow-overlap: true;
+    b/text-dy: 3;
+*/
+  }
 }
 
 #routes [zoom>=10] {
@@ -33,6 +50,7 @@ Map {
     marker-height: 12;
     marker-allow-overlap: true;
     marker-clip: false;
+    [ind_c<10] { marker-opacity: 0.5; }
   }
   
   [zoom>=12] {
@@ -40,6 +58,7 @@ Map {
     [routes=0] {
       // polygon-pattern-file: url('hachure-magenta.png');
       polygon-fill: magenta;
+	  [ind_c<10] { polygon-opacity: 0.5; }
 /*
       [nbcar>1] { polygon-opacity: 0.3; }
       [zoom>=14][nbcar>1] {
@@ -52,6 +71,22 @@ Map {
       }
 */
     }
+  }
+  [zoom>=16] {
+    opacity: 0.7;
+    line-width: 0.2;
+	[ind_c>=10] { a/text-face-name: "DejaVu Sans Mono Bold"; }
+	a/text-face-name: "DejaVu Sans ExtraLight";
+    a/text-name: [ind_c]+" hab.";
+    a/text-allow-overlap: true;
+    a/text-orientation: 6;
+/*
+    a/text-dy: -3;
+	b/text-face-name: "DejaVu Sans Mono Oblique";
+    b/text-name: [buildings]+" bât.";
+    b/text-allow-overlap: true;
+    b/text-dy: 3;
+*/
   }
 }
 
