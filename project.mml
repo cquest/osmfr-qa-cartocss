@@ -28,7 +28,7 @@
       ],
       "Datasource": {
         "type": "postgis",
-        "table": "(select  wkb_geometry, count(b.*) as buildings, nbcar  from insee_menages i left join planet_osm_polygon b on (st_intersects(st_expand(i.wkb_geometry,100), b.way) and b.building is not null) where i.wkb_geometry && !bbox! and nbcar<4 group by i.wkb_geometry,nbcar) as carreaux",
+        "table": "(select wkb_geometry, count(b.*) as buildings, ceiling(ind_c) as ind_c  from insee_menages i left join planet_osm_polygon b on (st_intersects(st_expand(i.wkb_geometry,10), b.way) and b.building is not null) where i.wkb_geometry && !bbox! group by i.wkb_geometry,ind_c) as carreaux",
         "key_field": "",
         "geometry_field": "",
         "extent_cache": "auto",
@@ -38,7 +38,7 @@
         "user": "fr",
         "password": "m4d31nfr4nc3",
         "id": "bati",
-        "project": "insee",
+        "project": "osmfr-qa-cartocss",
         "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over"
       },
       "id": "bati",
@@ -57,7 +57,7 @@
       ],
       "Datasource": {
         "type": "postgis",
-        "table": "(select  wkb_geometry, nbcar, count(l.*) as routes  from insee_menages i left join planet_osm_line l on (st_intersects(st_expand(i.wkb_geometry,100), l.way) and l.highway is not null) where i.wkb_geometry && !bbox! group by i.wkb_geometry, nbcar) as carreaux",
+        "table": "(select  wkb_geometry, ceiling(ind_c) as ind_c, count(l.*) as routes  from insee_menages i left join planet_osm_line l on (st_intersects(st_expand(i.wkb_geometry,100), l.way) and l.highway is not null) where i.wkb_geometry && !bbox! group by i.wkb_geometry, ind_c) as carreaux",
         "key_field": "",
         "geometry_field": "",
         "extent_cache": "auto",
