@@ -6,9 +6,9 @@
     85.0511
   ],
   "center": [
-    2.5,
-    48.8,
-    14
+    5.85,
+    45.95,
+    11
   ],
   "format": "png8",
   "interactivity": false,
@@ -75,6 +75,60 @@
       "name": "routes"
     },
     {
+      "geometry": "linestring",
+      "extent": [
+        -179.9999999749438,
+        -85.051,
+        179.9999999749438,
+        85.051
+      ],
+      "Datasource": {
+        "type": "postgis",
+        "table": "(select way from planet_osm_line where way && !bbox! and highway is not null and highway in ('primary','secondary','tertiary','residential','unclassified','trunk') and ref is null and name is null and not tags ? 'footway') as noname",
+        "key_field": "",
+        "geometry_field": "way",
+        "extent_cache": "custom",
+        "extent": "-20037508.34,-20037508.34,20037508.34,20037508.34",
+        "dbname": "osm",
+        "host": "localhost",
+        "user": "fr",
+        "password": "m4d31nfr4nc3"
+      },
+      "id": "noname",
+      "class": "",
+      "srs-name": "900913",
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "advanced": {},
+      "name": "noname"
+    },
+    {
+      "geometry": "point",
+      "extent": [
+        -179.9999999749438,
+        -85.051,
+        179.9999999749438,
+        85.051
+      ],
+      "Datasource": {
+        "type": "postgis",
+        "table": "(select c.wkb_geometry as way, o.name, o.insee, o.nb_osm, count(*) as nb_fantoir, 100*(nb_osm)/(count(*)) as ratio, count(*)-nb_osm as manque from dgfip_fantoir_voies v join (select n.\"ref:INSEE\" as insee, n.name, count(distinct(l.name)) as nb_osm from planet_osm_point n left join planet_osm_polygon p on (p.\"ref:INSEE\"=n.\"ref:INSEE\" and p.boundary='administrative' and p.admin_level='8') left join planet_osm_line l on (st_intersects(l.way,p.way) and l.highway is not null) where p.way && !bbox! and n.way && !bbox! group by n.\"ref:INSEE\", n.name) as o on (v.insee=o.insee) join r500_communes_noeuds c on (c.insee_comm=o.insee) where v.type_voie='1' group by o.insee, o.name, o.nb_osm, c.wkb_geometry) as fantoir",
+        "key_field": "",
+        "geometry_field": "way",
+        "extent_cache": "auto",
+        "extent": "-20037508.34,-20061906.38,20037508.34,20061906.38",
+        "dbname": "osm",
+        "host": "localhost",
+        "user": "fr",
+        "password": "m4d31nfr4nc3"
+      },
+      "id": "fantoir",
+      "class": "",
+      "srs-name": "900913",
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "advanced": {},
+      "name": "fantoir"
+    },
+    {
       "extent": [
         -5.096542304283048,
         41.388255319471796,
@@ -83,7 +137,7 @@
       ],
       "Datasource": {
         "type": "postgis",
-        "table": "(SELECT count(*) as nb, c.insee_comm, c.wkb_geometry, d.format FROM r500_communes_noeuds c LEFT JOIN planet_osm_polygon b ON (ST_DWithin(c.wkb_geometry, b.way, 200) AND b.building is not null) LEFT JOIN cadastre d ON (d.insee = c.insee_comm) GROUP BY c.insee_comm, c.wkb_geometry, d.format) as bati_lz",
+        "table": "(SELECT count(*) as nb, c.insee_comm, c.wkb_geometry, d.format FROM r500_communes_noeuds c LEFT JOIN planet_osm_polygon b ON (ST_DWithin(c.wkb_geometry, b.way, 300) AND b.building is not null) LEFT JOIN cadastre d ON (d.insee = c.insee_comm) GROUP BY c.insee_comm, c.wkb_geometry, d.format) as bati_lz",
         "key_field": "",
         "geometry_field": "",
         "extent_cache": "auto",
