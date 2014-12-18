@@ -8,7 +8,7 @@
   "center": [
     5.85,
     45.95,
-    11
+    16
   ],
   "format": "png8",
   "interactivity": false,
@@ -28,7 +28,7 @@
       ],
       "Datasource": {
         "type": "postgis",
-        "table": "(select wkb_geometry, count(b.*) as buildings, ceiling(ind_c) as ind_c  from insee_menages i left join planet_osm_polygon b on (st_intersects(st_expand(i.wkb_geometry,10), b.way) and b.building is not null) where i.wkb_geometry && !bbox! group by i.wkb_geometry,ind_c) as carreaux",
+        "table": "/* qa-bati */ (select wkb_geometry, count(b.*) as buildings, ceiling(ind_c) as ind_c  from insee_menages i left join planet_osm_polygon b on (st_intersects(st_expand(i.wkb_geometry,10), b.way) and b.building is not null) where i.wkb_geometry && !bbox! group by i.wkb_geometry,ind_c) as carreaux",
         "key_field": "",
         "geometry_field": "",
         "extent_cache": "auto",
@@ -57,7 +57,7 @@
       ],
       "Datasource": {
         "type": "postgis",
-        "table": "(select  wkb_geometry, ceiling(ind_c) as ind_c, count(l.*) as routes  from insee_menages i left join planet_osm_line l on (st_intersects(st_expand(i.wkb_geometry,100), l.way) and l.highway is not null) where i.wkb_geometry && !bbox! group by i.wkb_geometry, ind_c) as carreaux",
+        "table": "/*** qa-routes ***/ (select  wkb_geometry, ceiling(ind_c) as ind_c, count(l.*) as routes  from insee_menages i left join planet_osm_line l on (st_expand(i.wkb_geometry,100) && l.way and l.highway is not null) where i.wkb_geometry && !bbox! group by i.wkb_geometry, ind_c) as carreaux",
         "key_field": "",
         "geometry_field": "",
         "extent_cache": "auto",
@@ -84,7 +84,7 @@
       ],
       "Datasource": {
         "type": "postgis",
-        "table": "(select way from planet_osm_line where way && !bbox! and highway is not null and highway in ('primary','secondary','tertiary','residential','unclassified','trunk') and ref is null and name is null and not tags ? 'footway') as noname",
+        "table": "/* qa-noname */ (select way from planet_osm_line where way && !bbox! and highway is not null and highway in ('primary','secondary','tertiary','residential','unclassified','trunk') and ref is null and name is null and not tags ? 'footway') as noname",
         "key_field": "",
         "geometry_field": "way",
         "extent_cache": "custom",
@@ -111,7 +111,7 @@
       ],
       "Datasource": {
         "type": "postgis",
-        "table": "(select c.wkb_geometry as way, o.name, o.insee, o.nb_osm, count(*) as nb_fantoir, 100*(nb_osm)/(count(*)) as ratio, count(*)-nb_osm as manque from dgfip_fantoir_voies v join (select n.\"ref:INSEE\" as insee, n.name, count(distinct(l.name)) as nb_osm from planet_osm_point n left join planet_osm_polygon p on (p.\"ref:INSEE\"=n.\"ref:INSEE\" and p.boundary='administrative' and p.admin_level='8') left join planet_osm_line l on (st_intersects(l.way,p.way) and l.highway is not null) where p.way && !bbox! and n.way && !bbox! group by n.\"ref:INSEE\", n.name) as o on (v.insee=o.insee) join r500_communes_noeuds c on (c.insee_comm=o.insee) where v.type_voie='1' group by o.insee, o.name, o.nb_osm, c.wkb_geometry) as fantoir",
+        "table": "/* qa-fantoir */ (select c.wkb_geometry as way, o.name, o.insee, o.nb_osm, count(*) as nb_fantoir, 100*(nb_osm)/(count(*)) as ratio, count(*)-nb_osm as manque from dgfip_fantoir_voies v join (select n.tags->'ref:INSEE' as insee, n.name, count(distinct(l.name)) as nb_osm from planet_osm_point n left join planet_osm_polygon p on (p.tags->'ref:INSEE'=n.tags->'ref:INSEE' and p.boundary='administrative' and p.admin_level='8') left join planet_osm_line l on (st_intersects(l.way,p.way) and l.highway is not null) where p.way && !bbox! and n.way && !bbox! group by n.tags->'ref:INSEE', n.name) as o on (v.insee=o.insee) join r500_communes_noeuds c on (c.insee_comm=o.insee) where v.type_voie='1' group by o.insee, o.name, o.nb_osm, c.wkb_geometry) as fantoir",
         "key_field": "",
         "geometry_field": "way",
         "extent_cache": "auto",
@@ -137,7 +137,7 @@
       ],
       "Datasource": {
         "type": "postgis",
-        "table": "(SELECT count(*) as nb, c.insee_comm, c.wkb_geometry, d.format FROM r500_communes_noeuds c LEFT JOIN planet_osm_polygon b ON (ST_DWithin(c.wkb_geometry, b.way, 300) AND b.building is not null) LEFT JOIN cadastre d ON (d.insee = c.insee_comm) GROUP BY c.insee_comm, c.wkb_geometry, d.format) as bati_lz",
+        "table": "/* qa-batilz */ (SELECT count(*) as nb, c.insee_comm, c.wkb_geometry, d.format FROM r500_communes_noeuds c LEFT JOIN planet_osm_polygon b ON (ST_DWithin(c.wkb_geometry, b.way, 300) AND b.building is not null) LEFT JOIN cadastre d ON (d.insee = c.insee_comm) GROUP BY c.insee_comm, c.wkb_geometry, d.format) as bati_lz",
         "key_field": "",
         "geometry_field": "",
         "extent_cache": "auto",
@@ -156,7 +156,7 @@
     }
   ],
   "scale": 1,
-  "metatile": 2,
+  "metatile": 8,
   "_basemap": "examples.map-vyofok3q",
   "name": "",
   "description": "",
