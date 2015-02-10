@@ -1,10 +1,20 @@
-/*
-autopilot 0.0.1
-[{"id":"Map","background-color":"#b8dee6"}]
-*/
 Map {
   buffer-size: 64;
 }
+
+
+#buildings_lz [zoom<=11]{
+    opacity: 0.5;
+	marker-fill: cyan;
+  	marker-opacity: 0.5;
+    marker-height: 2;
+    [zoom>=7] { marker-height: 4; }
+    [zoom>=9] { marker-height: 8; }
+    marker-allow-overlap: true;
+  	marker-ignore-placement: true;
+	marker-line-width: 0;
+}
+
 
 #bati [zoom>=12] {
   opacity: 0.7;
@@ -12,7 +22,6 @@ Map {
   [ind_c<10] { polygon-opacity: 0.5; }
   
   [buildings=0] {
-    // polygon-pattern-file: url('hachure-0cf.png');
     polygon-fill: #0cf;
   }
   [zoom>=16] {
@@ -22,21 +31,16 @@ Map {
     a/text-name: [ind_c]+" hab.";
     a/text-allow-overlap: true;
     a/text-orientation: 6;
-/*
-    a/text-dy: -3;
-	b/text-face-name: "DejaVu Sans Mono Oblique";
-    b/text-name: [buildings]+" bât.";
-    b/text-allow-overlap: true;
-    b/text-dy: 3;
-*/
   }
 }
 
-#routes [zoom>=9] {
-  [zoom<=11][routes=0] {
+#routes {
+  [zoom<=11] {
     marker-fill: magenta;
     marker-line-width: 0;
-    marker-height: 8;
+    marker-height: 2;
+    [zoom>=7] { marker-height: 4; }
+    [zoom>=9] { marker-height: 8; }
     marker-allow-overlap: true;
     marker-clip: false;
     [ind_c<10] { marker-opacity: 0.5; } // moins de 10 habitants sur le carré
@@ -44,22 +48,9 @@ Map {
   
   [zoom>=12] {
     opacity: 0.7;
-    [routes=0] {
       // polygon-pattern-file: url('hachure-magenta.png');
       polygon-fill: magenta;
 	  [ind_c<10] { polygon-opacity: 0.5; } // moins de 10 habitants sur le carré
-/*
-      [nbcar>1] { polygon-opacity: 0.3; }
-      [zoom>=14][nbcar>1] {
-        marker-height: [nbcar]*4;
-        marker-fill-opacity: 0;
-        marker-clip: false;
-        marker-line-color: grey;
-        marker-line-width: 2;
-        marker-ignore-placement: false;
-      }
-*/
-    }
   }
   [zoom>=16] {
     opacity: 0.7;
@@ -69,13 +60,6 @@ Map {
     a/text-name: [ind_c]+" hab.";
     a/text-allow-overlap: true;
     a/text-orientation: 6;
-/*
-    a/text-dy: -3;
-	b/text-face-name: "DejaVu Sans Mono Oblique";
-    b/text-name: [buildings]+" bât.";
-    b/text-allow-overlap: true;
-    b/text-dy: 3;
-*/
   }
 }
 
@@ -89,7 +73,7 @@ Map {
     marker-line-color: grey;
     [format='VECT'] { marker-line-color: #0b0; marker-line-width: 4;}
     marker-line-width: 2;
-    marker-ignore-placement: false;
+    marker-ignore-placement: true;
   }
 }
 

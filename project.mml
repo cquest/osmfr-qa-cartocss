@@ -28,7 +28,7 @@
       ],
       "Datasource": {
         "type": "postgis",
-        "table": "/* qa-bati */ (select wkb_geometry, count(b.*) as buildings, ceiling(ind_c) as ind_c  from insee_menages i left join planet_osm_polygon b on (st_intersects(st_expand(i.wkb_geometry,10), b.way) and b.building is not null) where i.wkb_geometry && !bbox! group by i.wkb_geometry,ind_c) as carreaux",
+        "table": "/* qa-bati */ (select wkb_geometry, buildings, ceiling(ind_c) as ind_c  from insee_menages i where i.wkb_geometry && !bbox!) as buildings",
         "key_field": "",
         "geometry_field": "",
         "extent_cache": "auto",
@@ -46,7 +46,8 @@
       "srs-name": "900913",
       "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
       "advanced": {},
-      "name": "bati"
+      "name": "bati",
+      "geometry": "polygon"
     },
     {
       "extent": [
@@ -57,7 +58,7 @@
       ],
       "Datasource": {
         "type": "postgis",
-        "table": "/*** qa-routes ***/ (select  wkb_geometry, ceiling(ind_c) as ind_c, count(l.*) as routes  from insee_menages i left join planet_osm_line l on (st_expand(i.wkb_geometry,100) && l.way and l.highway is not null) where i.wkb_geometry && !bbox! group by i.wkb_geometry, ind_c) as carreaux",
+        "table": "/*** qa-routes ***/ (select  i.wkb_geometry, ind_c from insee_menages i  where i.wkb_geometry && !bbox! and i.highways=0) as carreaux",
         "key_field": "",
         "geometry_field": "",
         "extent_cache": "auto",
@@ -72,7 +73,8 @@
       "srs-name": "900913",
       "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
       "advanced": {},
-      "name": "routes"
+      "name": "routes",
+      "geometry": "polygon"
     },
     {
       "geometry": "linestring",
@@ -129,6 +131,33 @@
       "name": "fantoir"
     },
     {
+      "geometry": "point",
+      "extent": [
+        -5.129722368257021,
+        41.36776952163563,
+        9.560160347841311,
+        51.08373477873707
+      ],
+      "Datasource": {
+        "type": "postgis",
+        "table": "/* qa-buildingslz */ (select st_centroid(wkb_geometry) as wkb_geometry from insee_menages where wkb_geometry && !bbox! and buildings=0) as buildings_lz",
+        "key_field": "",
+        "geometry_field": "",
+        "extent_cache": "auto",
+        "extent": "-571038.081945237,5066739.86460471,1064232.18182374,6636118.82261642",
+        "host": "localhost",
+        "user": "fr",
+        "password": "m4d31nfr4nc3",
+        "dbname": "osm"
+      },
+      "id": "buildings_lz",
+      "class": "",
+      "srs-name": "900913",
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "advanced": {},
+      "name": "buildings_lz"
+    },
+    {
       "extent": [
         -5.096542304283048,
         41.388255319471796,
@@ -157,7 +186,6 @@
   ],
   "scale": 1,
   "metatile": 8,
-  "_basemap": "examples.map-vyofok3q",
   "name": "",
   "description": "",
   "attribution": ""
