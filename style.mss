@@ -77,22 +77,7 @@ Map {
   }
 }
 
-#fantoir [zoom>=11]{
-	[zoom>=14]
-    {
-    	text-face-name: "DejaVu Sans Mono Bold";
-    	text-name: [name]+" ("+[insee]+")\n"+[nb_osm]+"/"+[nb_fantoir]+" = "+[ratio]+"% noms voies";
-    	text-allow-overlap: true;
-    	text-size: 12;
-    	text-halo-radius: 1;
-    	text-dy:8;
-    	text-fill: black;
-     	[ratio>=50] { text-fill: red; }
-     	[ratio>=75] { text-fill: orange; }
-    	[ratio>=95] { text-fill: green; }
-	 	[ratio>100] { text-fill: blue; }
- 	}
-    [zoom<=13]
+#fantoir_lz [zoom>=11][zoom<=13]
     {
     	marker-transform: translate(0,8); // décale
     	marker-clip: false;
@@ -105,10 +90,36 @@ Map {
     	marker-allow-overlap: true;
     	marker-ignore-placement: true;
     }
-}
 
+#fantoir [zoom>=14]
+    {
+    	text-clip: false;
+        text-face-name: "DejaVu Sans Mono Bold";
+    	text-name: [name]+"\n("+[insee]+") "+[format]+"\n"+[nb_osm]+"/"+[nb_fantoir]+" = "+[ratio]+"% noms voies";
+    	text-allow-overlap: true;
+    	text-size: 12;
+    	text-halo-radius: 1;
+    	text-dy:8;
+    	text-fill: black;
+  		a/line-clip: false;
+  		a/line-color: black;
+  		a/line-width: 2;
+  		a/line-opacity: 0.66;
+  		a/line-offset: -1;
+  		b/line-clip: false;
+  		b/line-color: black;
+  		b/line-width: 6;
+  		b/line-opacity: 0.35;
+  		b/line-offset: -3;
+     	[ratio>=50] { text-fill: red; a/line-color: red; b/line-color: red;}
+     	[ratio>=75] { text-fill: orange; a/line-color: orange; b/line-color: orange;}
+    	[ratio>=95] { text-fill: green; a/line-color: green; b/line-color: green;}
+	 	[ratio>100] { text-fill: blue; a/line-color: blue; b/line-color: blue;}
+  		
+ 	}
 
 #noname [zoom>=14] {
   line-width:2;
   line-color:red;
+  line-dasharray: 4,4;
 }
