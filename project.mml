@@ -13,7 +13,7 @@
   "format": "png8",
   "interactivity": false,
   "minzoom": 6,
-  "maxzoom": 16,
+  "maxzoom": 20,
   "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
   "Stylesheet": [
     "style.mss"
@@ -113,7 +113,34 @@
       ],
       "Datasource": {
         "type": "postgis",
-        "table": "/* qa-fantoir */ (select p.way, o.name, o.insee, o.nb_osm, count(*) as nb_fantoir, 100*(nb_osm)/(count(*)) as ratio, count(*)-nb_osm as manque from dgfip_fantoir_voies v join (select n.tags->'ref:INSEE' as insee, n.name, count(distinct(l.name)) as nb_osm from planet_osm_point n left join planet_osm_polygon p on (p.tags->'ref:INSEE'=n.tags->'ref:INSEE' and p.boundary='administrative' and p.admin_level='8') left join planet_osm_line l on (st_intersects(l.way,p.way) and l.highway is not null) where p.way && !bbox! and n.way && !bbox! group by n.tags->'ref:INSEE', n.name) as o on (v.insee=o.insee) join r500_communes_noeuds c on (c.insee_comm=o.insee) join planet_osm_polygon p on (tags->'ref:INSEE'=o.insee AND boundary='administrative' AND admin_level='8')  where v.type_voie='1' group by o.insee, o.name, o.nb_osm, p.way) as fantoir",
+        "table": "/* qa-fantoir_lz */ (select c.wkb_geometry as way, o.name, o.insee, o.nb_osm, count(*) as nb_fantoir, 100*(nb_osm)/(count(*)) as ratio, count(*)-nb_osm as manque from dgfip_fantoir_voies v join (select n.tags->'ref:INSEE' as insee, n.name, count(distinct(l.name)) as nb_osm from planet_osm_point n left join planet_osm_polygon p on (p.tags->'ref:INSEE'=n.tags->'ref:INSEE' and p.boundary='administrative' and p.admin_level='8') left join planet_osm_line l on (st_intersects(l.way,p.way) and l.highway is not null) where p.way && !bbox! and n.way && !bbox! group by n.tags->'ref:INSEE', n.name) as o on (v.insee=o.insee) join r500_communes_noeuds c on (c.insee_comm=o.insee) where v.type_voie='1' group by o.insee, o.name, o.nb_osm, c.wkb_geometry) as fantoir_lz",
+        "key_field": "",
+        "geometry_field": "way",
+        "extent_cache": "auto",
+        "extent": "-20037508.34,-20061906.38,20037508.34,20061906.38",
+        "dbname": "osm",
+        "host": "localhost",
+        "user": "fr",
+        "password": "m4d31nfr4nc3"
+      },
+      "id": "fantoir_lz",
+      "class": "",
+      "srs-name": "900913",
+      "srs": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over",
+      "advanced": {},
+      "name": "fantoir_lz"
+    },
+    {
+      "geometry": "point",
+      "extent": [
+        -179.9999999749438,
+        -85.051,
+        179.9999999749438,
+        85.051
+      ],
+      "Datasource": {
+        "type": "postgis",
+        "table": "/* qa-fantoir */ (SELECT o.way, o.name, o.insee, o.nb_osm, count(*) as nb_fantoir, 100*(nb_osm)/(count(*)) as ratio, count(*)-nb_osm as manque, c.format\nFROM dgfip_fantoir_voies v JOIN\n(SELECT n.tags->'ref:INSEE' as insee, n.name, count(distinct(l.name)) as nb_osm, p.way\nFROM planet_osm_point n\nLEFT JOIN planet_osm_polygon p ON (p.tags ? 'ref:INSEE' AND n.tags ? 'ref:INSEE' AND p.tags->'ref:INSEE'=n.tags->'ref:INSEE' and p.boundary='administrative' and p.admin_level in ('8','9'))\nLEFT JOIN planet_osm_line l ON (st_intersects(l.way,p.way) and l.highway is not null and l.highway not in ('track','motorway'))\nwhere p.way && !bbox! group by n.tags->'ref:INSEE', n.name, p.way) as o\non (v.insee=o.insee)\nLEFT JOIN cadastre c ON (c.insee=o.insee)\nWHERE v.type_voie='1'\nGROUP BY o.insee, o.name, o.nb_osm, o.way, c.format) as fantoir",
         "key_field": "",
         "geometry_field": "way",
         "extent_cache": "auto",
@@ -186,6 +213,7 @@
   ],
   "scale": 1,
   "metatile": 8,
+  "_basemap": "",
   "name": "",
   "description": "",
   "attribution": ""
