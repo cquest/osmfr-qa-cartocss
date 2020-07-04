@@ -1,5 +1,5 @@
 Map {
-  buffer-size: 64;
+  buffer-size: 128;
 }
 
 
@@ -63,7 +63,7 @@ Map {
   }
 }
 
-#bati_lz [zoom>=9] {
+#bati_lz [zoom>=9][zoom<=13] {
   [nb<10] {
     marker-transform: translate(0,-8); // décale
     marker-clip: false;
@@ -91,6 +91,12 @@ Map {
      	[ratio>=75] { text-fill: orange; }
     	[ratio>=95] { text-fill: green; }
 	 	[ratio>100] { text-fill: blue; }
+    	line-width: 4;
+    	line-offset: -2;
+     	[ratio>=50] { line-color: red; }
+     	[ratio>=75] { line-color: orange; }
+    	[ratio>=95] { line-color: green; }
+	 	[ratio>100] { line-color: blue; }
  	}
     [zoom<=13]
     {
